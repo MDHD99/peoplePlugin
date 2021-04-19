@@ -425,6 +425,7 @@
                     window.buildfire.spinner.show();
                     console.log("loadMore");
                     if (WidgetHome.busy) {
+                        window.buildfire.spinner.hide();
                         return;
                     }
                     WidgetHome.busy = true;
@@ -466,7 +467,8 @@
                     }
 
                     Buildfire[window.DB_PROVIDER].search(searchOptions, TAG_NAMES.PEOPLE, function (err, result) {
-                        console.log('-----------WidgetHome.loadMore-------------');                        
+                        console.log('-----------WidgetHome.loadMore-------------');  
+                        window.buildfire.spinner.hide();                      
                         if (err) {
                             window.buildfire.spinner.hide();
                             return console.error('-----------err in getting list-------------', err);
