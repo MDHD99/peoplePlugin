@@ -53,18 +53,12 @@
         </div>
     </div>
     <hr class="none">
-    <div class="item clearfix row">
-        <div class="main col-md-12 pull-right padding-left-zero row">
-            <div class="pull-left inner-main col-md-8 padding-zero">
-                <input type="text" class="form-control" ng-model="search" placeholder="Name">
-            </div>
-            <div class="col-md-4 pull-right">
-                <a class="btn btn-primary pull-right stretch"
-                   ng-click="ContentHome.searchListItem(search)">Search</a>
-            </div>
+    <div class="search-bar-container margin-bottom-thirty">
+        <div class="search-bar">
+            <input type="text" class="form-control" placeholder="Search Name" ng-model="search" ng-keyup="ContentHome.onEnterKey($event)">
+            <a class="btn btn-info" ng-click="ContentHome.searchListItem(search)"><span class="search-icon"></span></a>
         </div>
     </div>
-    <hr class="remove-border-margin">
     <div class="item clearfix row">
         <div class="main pull-left col-md-12 padding-left-zero">
             <div class="pull-left col-md-5 padding-zero">
@@ -85,8 +79,9 @@
                     </ul>
                 </div>
             </div>
-            <div class="col-md-4 pull-left col-md-offset-2">
-                <a class="btn btn-success pull-right stretch" href="#/people">Add New Person</a>
+            <div class="col-md-4 col-md-offset-2 pull-right">
+                <!-- <a class="btn btn-success stretch" href="#/people">Add New Person</a> -->
+                <a class="btn btn-success stretch" ng-click="ContentHome.openNewPerson()">Add New Person</a>
             </div>
         </div>
     </div>
@@ -114,10 +109,11 @@
                                  ng-if="!item.data.topImage">
                         </div>
                         <div class="copy pull-right">
-                            <a class="text-primary" href="#/people/{{item.id}}"><span class="title ellipsis pull-left">{{item.data.fName+' '+item.data.lName}}</span></a>
-                            <span class="title ellipsis pull-left" ng-if='!item.data.position'></span>
-                            <span class="title ellipsis pull-left"
-                                  ng-if='item.data.position'>{{item.data.position}}</span>
+                            <div>
+                                <a class="text-primary" ng-click="ContentHome.openPerson(item.id)"><span class="title ellipsis pull-left">{{item.data.fName+' '+item.data.lName}}</span></a>
+                                <span class="title ellipsis pull-left" ng-if="!item.data.position"></span>
+                                <span class="title ellipsis pull-left"ng-if="item.data.position">{{item.data.position}}</span>
+                            </div>
 
                             <div class="pull-right">
                                 <span class="btn-icon btn-link-icon btn-primary transition-third ng-isolate-scope zeroclipboard-is-hover"

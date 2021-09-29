@@ -128,9 +128,9 @@
     .run(['Location', '$location', '$rootScope', function (Location, $location, $rootScope) {
       buildfire.messaging.onReceivedMessage = function (msg) {
         switch (msg.type) {
-          case 'AddNewItem':
-            Location.goTo("#/people/" + msg.id + "?stopSwitch=true");
-            break;
+          // case 'AddNewItem':
+          //   Location.goTo("#/people/" + msg.id + "?stopSwitch=true");
+          //   break;
           case 'OpenItem':
             Location.goTo("#/people/" + msg.id);
             break;
