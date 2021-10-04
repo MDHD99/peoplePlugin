@@ -1,4 +1,4 @@
-<div class="padding-bottom-ten">
+<div class="padded-sm padding-bottom-twenty">
   <div class="item clearfix row">
     <div class="labels col-md-3 padding-right-zero pull-left">
       <span>Top Image</span>
@@ -28,7 +28,7 @@
     </div>
     <div class="main col-md-9 pull-right">
       <input type="text" class="form-control"
-             ng-model="ContentPeople.item.data.fName" placeholder="">
+             ng-model="ContentPeople.item.data.fName" placeholder="" maxlength="50">
     </div>
   </div>
   <hr class="none">
@@ -38,17 +38,17 @@
     </div>
     <div class="main col-md-9 pull-right">
       <input type="text" class="form-control"
-             ng-model="ContentPeople.item.data.lName" placeholder="">
+             ng-model="ContentPeople.item.data.lName" placeholder="" maxlength="70">
     </div>
   </div>
   <hr class="none">
   <div class="item clearfix row">
-    <div class="labels col-md-3 padding-right-zero pull-left">
+    <div class="labels col-md-3 padding-right-zero pull-left" >
       <span>Position</span>
     </div>
     <div class="main col-md-9 pull-right">
       <input type="text" class="form-control"
-             ng-model="ContentPeople.item.data.position" placeholder="">
+             ng-model="ContentPeople.item.data.position" placeholder="" maxlength="140">
     </div>
   </div>
   <hr class="none">
@@ -59,7 +59,7 @@
     <div class="main col-md-9 pull-right">
       <input type="text" class="form-control"
              ng-model="draft_email" placeholder="">
-      <div class="alert alert-danger" ng-show="error.emailExists">
+      <div class="alert alert-danger" ng-show="error.emailExists" maxlength="320">
         Email already exists
       </div>
     </div>
@@ -71,18 +71,9 @@
     </div>
     <div class="main col-md-9 pull-right">
       <input type="text" class="form-control"
-             ng-model="ContentPeople.item.data.phone" placeholder="">
+             ng-model="ContentPeople.item.data.phone" placeholder="" maxlength="15">
     </div>
   </div>
-  <!-- <hr class="none">
-  <div class="item clearfix row">
-    <div class="labels col-md-3 padding-right-zero pull-left">
-      <span>Deep Link URL</span>
-    </div>
-    <div class="main col-md-9 pull-right">
-      <span>{{ContentPeople.item.data.deepLinkUrl}}</span>
-    </div>
-  </div> -->
   <hr class="none">
   <div class="item clearfix row">
     <div class="labels col-md-3 padding-right-zero pull-left">
@@ -100,12 +91,12 @@
   </div>
   <hr class="none">
   <div class="item clearfix row">
-    <div class="labels col-md-3 padding-right-zero pull-left">
+    <div class="labels col-md-1 padding-right-zero pull-left">
       <span>Links</span>
     </div>
-    <div class="main col-md-9 pull-right">
-      <div class="col-md-6 row">
-        <a class="btn btn-success pull-left stretch"
+    <div class="main col-md-11 pull-left">
+      <div class="col-md-12">
+        <a class="btn btn-success btn-add pull-left"
            ng-click="ContentPeople.openAddLinkPopup()">Add Contact Information</a>
       </div>
     </div>
@@ -121,9 +112,10 @@
           <span class="icon icon-menu cursor-grab pull-left"></span>
 
           <div class="media-holder pull-left">
-            <img src="https://www.placehold.it/50x50">
+            <img ng-if="_link.iconUrl" ng-src="{{_link.iconUrl}}">
+            <img ng-if="!_link.iconUrl" src="../../../../styles/media/holder-1x1.png">
           </div>
-          <div class="copy pull-right">
+          <div class="copy pull-right" style="display: flex; align-items: center;">
             <div class="col-md-4 padding-zero pull-left">
               <a class="text-primary"
                  ng-click="ContentPeople.openEditLink(_link,$index)"><span
@@ -134,7 +126,7 @@
               <span class="content ellipsis" data-ng-if="_link.deepLinkUrl">{{_link.deepLinkUrl}}</span>
             </div>
             <div class="pull-right">
-              <span class="btn-icon btn-delete-icon btn-danger transition-third"
+              <span class="btn-icon btn-delete-icon btn-danger transition-third" title="Delete"
                     ng-click="ContentPeople.removeLink($index)"></span>
             </div>
           </div>

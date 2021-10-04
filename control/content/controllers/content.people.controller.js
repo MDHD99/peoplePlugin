@@ -114,7 +114,6 @@
         /*On click button done it redirects to home*/
         ContentPeople.done = function () {          
           if (ContentPeople.item && ContentPeople.item.id && ContentPeople.item.data) {	
-            $scope.savingPerson = true;
             if (!$scope.$$phase) $scope.$digest();
 
             let name = `${ContentPeople.item.data.fName} ${ContentPeople.item.data.lName}`;
@@ -122,6 +121,7 @@
               $scope.savingPerson = false;
               if (!$scope.$$phase) $scope.$digest();
 
+              buildfire.messaging.sendMessageToWidget({ type: "reload" });
               Buildfire.history.pop();
               Location.goToHome();
             });	
@@ -234,8 +234,6 @@
                   // }
                   ContentPeople.isUpdating = false;
 
-                  $scope.savingPerson = false;
-
                   if (!$scope.$$phase) $scope.$digest();
                 });
                 callback();
@@ -310,7 +308,6 @@
                   () => { }
                 );
               }
-              $scope.savingPerson = false;
               if (!$scope.$$phase) $scope.$digest();
               callback();
             });
@@ -417,7 +414,7 @@
           if (!item.id && isUnchanged(item)) {
             buildfire.dialog.toast({
               message: "Please fill at least one field",
-              type: 'warning',
+              type: 'danger',
               duration: 2500,
               hideDismissButton: true
             });

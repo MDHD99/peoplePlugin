@@ -102,13 +102,13 @@
          * @type {*[]}
          */
         ContentHome.sortingOptions = [
-          SORT.MANUALLY,
-          SORT.OLDEST_TO_NEWEST,
-          SORT.NEWEST_TO_OLDEST,
           SORT.FIRST_NAME_A_TO_Z,
           SORT.FIRST_NAME_Z_TO_A,
           SORT.LAST_NAME_A_TO_Z,
-          SORT.LAST_NAME_Z_TO_A
+          SORT.LAST_NAME_Z_TO_A,
+          SORT.MANUALLY,
+          SORT.NEWEST_TO_OLDEST,
+          SORT.OLDEST_TO_NEWEST,
         ];
 
 
@@ -389,15 +389,16 @@
          * Used to show/hide alert message when item's deep-link copied from people list.
          */
         ContentHome.openDeepLinkDialog = function (item) {
-          ContentHome.DeepLinkCopyUrl = true;
           if(item && item.data && !item.data.deepLinkUrl) {
               item.data.deepLinkUrl = Buildfire.deeplink.createLink({id: item.id});
               ContentHome.updateItemData(item);
           }
-          setTimeout(function () {
-            ContentHome.DeepLinkCopyUrl = false;
-            $scope.$apply();
-          }, 1500);
+
+          buildfire.dialog.toast({
+            message: "DeepLink URL copied to clipboard",
+            type: 'success',
+            duration: 1500
+          });
         };
 
           ContentHome.updateItemData = function (item) {

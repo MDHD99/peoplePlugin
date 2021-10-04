@@ -328,6 +328,12 @@
                         WidgetPeople.item = msg.item;
                         if (!$scope.$$phase) $scope.$apply();
                        break;
+                     case 'goHome':
+                        Location.goToHome();
+                       break;
+                     case 'reload':
+                        $rootScope.reset();
+                       break;
                      default:
                        if ($rootScope.showHome == false) {
                            Location.goToHome();

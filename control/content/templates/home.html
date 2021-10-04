@@ -1,4 +1,4 @@
-<div class="infinite-scroll-parent">
+<div class="infinite-scroll-parent padded-sm">
     <hr class="none"/>
     <div>
         <div class="carousel-padding-botton" id="carousel"></div>
@@ -33,69 +33,61 @@
         </div>
     </div>
     <hr class="none">
-    <div class="item clearfix row margin-top-thirty">
-        <div class="labels col-md-3 padding-right-zero pull-left">
-            <span>Bulk Actions</span>
-        </div>
-        <div class="main col-md-9 pull-right">
-            <a class="btn btn-primary" ng-click="ContentHome.openImportCSVDialog()">Import CSV</a>
-            <a class="btn btn-primary margin-left-ten" ng-click="ContentHome.exportCSV()">Export CSV</a>
-            <a class="btn btn-primary margin-left-ten" ng-click="ContentHome.getTemplate()">Get Template</a>
-        </div>
-    </div>
-    <hr class="none">
-    <div class="item clearfix row">
-        <div class="labels col-md-3 padding-right-zero pull-left">
+    <h1>People</h1>
 
-        </div>
-        <div class="main col-md-9 pull-right padding-right-zero">
-            <span style="font-size: smaller">NOTE: Safari users need to rename the file to .csv to open the file.</span>
-        </div>
+    <div class="search-bar margin-bottom-ten">
+        <input  type="text" class="form-control"
+                placeholder="Search by Name"
+                ng-model="search"
+                ng-keyup="ContentHome.onEnterKey($event)">
+        <button class="btn btn-info" ng-click="ContentHome.searchListItem(search)"><span class="search-icon"></span></button>
     </div>
-    <hr class="none">
-    <div class="search-bar-container margin-bottom-thirty">
-        <div class="search-bar">
-            <input type="text" class="form-control" placeholder="Search Name" ng-model="search" ng-keyup="ContentHome.onEnterKey($event)">
-            <a class="btn btn-info" ng-click="ContentHome.searchListItem(search)"><span class="search-icon"></span></a>
-        </div>
-    </div>
-    <div class="item clearfix row">
-        <div class="main pull-left col-md-12 padding-left-zero">
-            <div class="pull-left col-md-5 padding-zero">
-                <div class="pull-left col-md-4 margin-top-five">
-                    <span>Sort By</span>
-                </div>
-                <div class="dropdown pull-right col-md-8 padding-zero" dropdown is-open="status.isopen">
-                    <button class="btn btn-default text-left dropdown-toggle" dropdown-toggle ng-disabled="disabled"
-                            aria-expanded="true">
-                        <span class="pull-left">{{ContentHome.data.content.sortBy }}</span>
-                        <span class="chevron icon-chevron-down pull-right"></span>
-                    </button>
-                    <ul class="dropdown-menu extended" role="menu">
-                        <li ng-repeat="value in ContentHome.sortingOptions"
-                            ng-click="ContentHome.sortPeopleBy(this.value)">
-                            <a tabindex="-1" class="transition-third">{{value}}</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            <div class="col-md-4 col-md-offset-2 pull-right">
-                <!-- <a class="btn btn-success stretch" href="#/people">Add New Person</a> -->
-                <a class="btn btn-success stretch" ng-click="ContentHome.openNewPerson()">Add New Person</a>
+
+    <div class="flex margin-bottom-ten">
+        <div class="col-md-5 padding-zero flex">
+          <div class="dropdown col-md-8 padding-zero" dropdown is-open="status.isopen">
+                <button class="btn btn-default text-left dropdown-toggle sort-dropdown" dropdown-toggle ng-disabled="disabled"
+                        aria-expanded="true">
+                    <span class="pull-left">{{ContentHome.data.content.sortBy }}</span>
+                    <span class="chevron icon-chevron-down pull-right"></span>
+                </button>
+                <ul class="dropdown-menu extended" role="menu">
+                    <li ng-repeat="value in ContentHome.sortingOptions"
+                        ng-click="ContentHome.sortPeopleBy(this.value)">
+                        <a tabindex="-1" class="transition-third">{{value}}</a>
+                    </li>
+                </ul>
             </div>
         </div>
+        
+        <div class="flex-left-auto margin-right-ten">
+          <div class="dropdown" dropdown>
+            <button class="btn btn-default text-left dropdown-toggle"
+                    data-toggle="dropdown" dropdown-toggle aria-expanded="true">
+              <span class="pull-left">Bulk Actions</span>
+              <span class="chevron icon-chevron-down pull-right"></span>
+            </button>
+            <ul class="dropdown-menu extended" role="menu">
+                <li ng-click="ContentHome.exportCSV()"><a>Export CSV</a></li>
+                <li class="margin-bottom-ten" ng-click="ContentHome.getTemplate()"><a>Get Template</a></li>
+                <li ng-click="ContentHome.openImportCSVDialog()"><a>Import CSV</a></li>
+                <li><p class="info-note caption margin-bottom-zero">Safari users need to rename the file to .csv to open the file.</p></li>
+            </ul>
+          </div>
+        </div>
+        <a class="btn btn-success btn-add col-md-3" ng-click="ContentHome.openNewPerson()">Add Person</a>
     </div>
-    <hr class="remove-border-margin">
+    
     <div class="item clearfix">
-        <div ng-if="ContentHome.DeepLinkCopyUrl" class="alert alert-success transition-half deep-link">
+        <!-- <div ng-if="ContentHome.DeepLinkCopyUrl" class="alert alert-success transition-half deep-link">
             <span class="text-center">DeepLink URL copied to clipboard.</span>
-        </div>
+        </div> -->
         <div class="tab-order draggable-list-view wide-list has-btn-link border-grey border-radius-four infinite-scroll-parent"
              style="height: calc(100% - 45px);">
             <div ng-if="ContentHome.data" infinite-scroll-distance="1" data-infinite-container=".infinite-scroll-parent"
                  infinite-scroll="ContentHome.loadMore()" infinite-scroll-disabled="ContentHome.noMore">
                 <div ui-sortable="ContentHome.itemSortableOptions" ng-model="ContentHome.items">
-                    <div class="well text-center margin-bottom-zero border-none" ng-if="!ContentHome.items.length">
+                    <div class="empty-state" ng-if="!ContentHome.items.length">
                         <p class="margin-zero">No items found.</p>
                     </div>
                     <div ng-if="ContentHome.items.length" class="d-item double-line square-icon clearfix"
@@ -108,19 +100,19 @@
                             <img src="../../../../styles/media/holder-1x1.png"
                                  ng-if="!item.data.topImage">
                         </div>
-                        <div class="copy pull-right">
-                            <div>
+                        <div class="copy pull-right people-item">
+                            <div class="people-item-name">
                                 <a class="text-primary" ng-click="ContentHome.openPerson(item.id)"><span class="title ellipsis pull-left">{{item.data.fName+' '+item.data.lName}}</span></a>
                                 <span class="title ellipsis pull-left" ng-if="!item.data.position"></span>
                                 <span class="title ellipsis pull-left"ng-if="item.data.position">{{item.data.position}}</span>
                             </div>
 
                             <div class="pull-right">
-                                <span class="btn-icon btn-link-icon btn-primary transition-third ng-isolate-scope zeroclipboard-is-hover"
+                                <span class="btn-icon btn-link-icon btn-primary transition-third zeroclipboard-is-hover"
                                       ng-click="ContentHome.openDeepLinkDialog(item)"
-                                      clip-copy="item.data.deepLinkUrl"></span>
+                                      clip-copy="item.data.deepLinkUrl" title="Copy Deeplink"></span>
                                 <span class="btn-icon btn-delete-icon btn-danger transition-third"
-                                      ng-click="ContentHome.removeListItem($index)"></span>
+                                      ng-click="ContentHome.removeListItem($index)" title="Delete"></span>
                             </div>
                         </div>
                     </div>
