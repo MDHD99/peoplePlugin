@@ -220,7 +220,7 @@ top: 8px;
 }
 
 .dropdown-menu{
-    max-height: 140px !important;
+    max-height: 160px !important;
 }
 
 .padding-content-top{
@@ -239,4 +239,95 @@ top: 8px;
 .remove-border-margin {
     border-top: 1px solid #fff;
     margin-top: 0px;
+}
+
+
+/* Sortablelist Styles */
+
+.btn-plus-icon, .btn-minus-icon, .btn-check-icon, .btn-edit-icon, .btn-delete-icon, .btn-exclamation-icon, .btn-question-icon, .btn-info-icon, .btn-link-icon {
+    -webkit-text-stroke: 0px;
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    line-height: 22px;
+    position: relative;
+    border-radius: 50px;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}
+
+.draggable-list-view .pull-right .btn-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: .25rem;
+    font-size: 1.125rem;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    min-width: unset;
+    background-color: transparent;
+    color: #000;
+    margin: 0 !important;
+    top: -1px !important;
+    margin-left: 10px !important;
+    
+}
+
+html[buildfire] .d-item .btn-delete-icon:hover::after {
+    color: var(--c-danger);
+}
+
+html[buildfire] .d-item .btn-link-icon:hover::after {
+    color: var(--c-primary);
+}
+
+.draggable-list-view .pull-right .btn-icon:hover {
+    background-color: #f2f2f2;
+}
+
+html[buildfire] .d-item .btn-delete-icon:after {
+    content: "\e60e";
+    font-family: "icomoon";
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    top: auto;
+    transition: color ease-in-out .2s;
+}
+
+#carousel > div > div > div.carousel-items.hide-empty.draggable-list-view.margin-top-twenty.border-radius-four.border-grey > div > div.copy.pull-right > div {
+    display: flex;
+    align-items: center;
+    position: relative;
+    top: -4px;
+}
+
+.btn-link-icon:after {
+    content: '\e60b';
+    font-family: "icomoon";
+    font-size: 18px;
+}
+
+.copy.pull-right.people-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.copy.pull-right.people-item .people-item-name {
+    flex-grow: 1;
+}
+
+.draggable-list-view .d-item.double-line .copy .pull-right span.btn-icon {
+    top: 7px !important
+}
+
+.btn-link-icon::after {
+    top: 10px !important;
+}
+
+.draggable-list-view.has-btn.links-list .d-item.double-line .copy .pull-right {
+    margin-top: -4px !important;
 }

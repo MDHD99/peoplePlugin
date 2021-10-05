@@ -102,13 +102,13 @@
          * @type {*[]}
          */
         ContentHome.sortingOptions = [
-          SORT.MANUALLY,
-          SORT.OLDEST_TO_NEWEST,
-          SORT.NEWEST_TO_OLDEST,
           SORT.FIRST_NAME_A_TO_Z,
           SORT.FIRST_NAME_Z_TO_A,
           SORT.LAST_NAME_A_TO_Z,
-          SORT.LAST_NAME_Z_TO_A
+          SORT.LAST_NAME_Z_TO_A,
+          SORT.MANUALLY,
+          SORT.NEWEST_TO_OLDEST,
+          SORT.OLDEST_TO_NEWEST,
         ];
 
 
@@ -389,15 +389,16 @@
          * Used to show/hide alert message when item's deep-link copied from people list.
          */
         ContentHome.openDeepLinkDialog = function (item) {
-          ContentHome.DeepLinkCopyUrl = true;
           if(item && item.data && !item.data.deepLinkUrl) {
               item.data.deepLinkUrl = Buildfire.deeplink.createLink({id: item.id});
               ContentHome.updateItemData(item);
           }
-          setTimeout(function () {
-            ContentHome.DeepLinkCopyUrl = false;
-            $scope.$apply();
-          }, 1500);
+
+          buildfire.dialog.toast({
+            message: "DeepLink URL copied to clipboard",
+            type: 'success',
+            duration: 1500
+          });
         };
 
           ContentHome.updateItemData = function (item) {
@@ -625,20 +626,20 @@
 
           buildfire.navigation.scrollTop();
 
-          var modalInstance = $modal.open({
-            templateUrl: 'templates/modals/remove-people.html',
-            controller: 'RemovePeoplePopupCtrl',
-            controllerAs: 'RemovePeoplePopup',
-            size: 'sm',
-            resolve: {
-              peopleInfo: function () {
-                return ContentHome.items[_index];
+          buildfire.dialog.confirm(
+            {
+              title: 'Delete Item',
+              message: "Are you sure you want to delete this item?",
+              confirmButton: {
+                type: "danger",
+                text: "Delete"
               }
-            }
-          });
-          modalInstance.result.then(function (message) {
-            if (message === 'yes') {
-              var item = ContentHome.items[_index];
+            },
+            (err, isConfirmed) => {
+              if (err) console.error(err);
+          
+              if (isConfirmed) {
+                var item = ContentHome.items[_index];
                 if (item.data.email && window.ENABLE_UNIQUE_EMAIL) {
                     Buildfire[window.DB_PROVIDER].searchAndUpdate({email: item.data.email}, {$set: {deleted: 'true'}}, TAG_NAMES.PEOPLE, function (err, result) {
                         Buildfire[window.DB_PROVIDER].search({filter: {'$json.email': item.data.email}}, TAG_NAMES.PEOPLE, function (err, result) {
@@ -708,10 +709,9 @@
                     $scope.$digest();
                   });
                 }
+              }
             }
-          }, function (data) {
-            //do something on cancel
-          });
+          );
         };
 
         /**
@@ -752,6 +752,10 @@
           ContentHome.loadMore('search');
         };
 
+        ContentHome.onEnterKey = (keyEvent) => {
+          if (keyEvent.which === 13) ContentHome.searchListItem($scope.search);
+      }
+
         /**
          * ContentHome.sortPeopleBy(value) used to sort people list
          * @param value is a sorting option
@@ -767,6 +771,22 @@
             ContentHome.loadMore();
           }
         };
+
+        ContentHome.openNewPerson = () => {
+          window.location.href = '#/people/new';
+            Buildfire.messaging.sendMessageToWidget({
+              id: 'new',
+              type: 'OpenItem'
+            });
+        }
+
+        ContentHome.openPerson = personId => {
+          window.location.href = '#/people/' + personId;
+            Buildfire.messaging.sendMessageToWidget({
+              id: personId,
+              type: 'OpenItem'
+            });
+        }
 
         /**
          * saveDataWithDelay(infoData) called when PEOPLE_INFO data get changed

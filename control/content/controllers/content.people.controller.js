@@ -70,12 +70,6 @@
         /*
          Send message to widget that this page has been opened
          */
-        if ($routeParams.itemId) {
-          buildfire.messaging.sendMessageToWidget({
-            id: $routeParams.itemId,
-            type: 'OpenItem'
-          });
-        }
 
         updateMasterItem(ContentPeople.item);
         function updateMasterItem(item) {
@@ -120,7 +114,6 @@
         /*On click button done it redirects to home*/
         ContentPeople.done = function () {          
           if (ContentPeople.item && ContentPeople.item.id && ContentPeople.item.data) {	
-            $scope.savingPerson = true;
             if (!$scope.$$phase) $scope.$digest();
 
             let name = `${ContentPeople.item.data.fName} ${ContentPeople.item.data.lName}`;
@@ -128,12 +121,18 @@
               $scope.savingPerson = false;
               if (!$scope.$$phase) $scope.$digest();
 
+              buildfire.messaging.sendMessageToWidget({ type: "reload" });
               Buildfire.history.pop();
               Location.goToHome();
             });	
           }
-
         };
+
+        ContentPeople.cancel = function () {
+          Buildfire.history.pop();
+          Location.goToHome();
+          buildfire.messaging.sendMessageToWidget({ type: "goHome" });
+        }
 
         ContentPeople.getItem = function (itemId) {
           var setItem = function (item) {
@@ -190,7 +189,7 @@
           ContentPeople.getItem($routeParams.itemId);
         }
 
-        ContentPeople.addNewItem = function (item) {
+        ContentPeople.addNewItem = function (item, callback) {
           /*if (item.data)
               item.data.email = $scope.draft_email;*/
           ContentPeople.isNewItemInserted = true;
@@ -227,18 +226,17 @@
                 }, () => {
                   ContentPeople.item.data.searchEngineDocumentId = searchEngineDocument ? searchEngineDocument.id : null;
                   // Send message to widget as soon as a new item is created with its id as a parameter
-                  if (ContentPeople.item.id) {
-                    buildfire.messaging.sendMessageToWidget({
-                      id: ContentPeople.item.id,
-                      type: 'AddNewItem'
-                    });
-                  }
+                  // if (ContentPeople.item.id) {
+                  //   buildfire.messaging.sendMessageToWidget({
+                  //     id: ContentPeople.item.id,
+                  //     type: 'AddNewItem'
+                  //   });
+                  // }
                   ContentPeople.isUpdating = false;
-
-                  $scope.savingPerson = false;
 
                   if (!$scope.$$phase) $scope.$digest();
                 });
+                callback();
               });
             });
           }
@@ -275,7 +273,7 @@
           }
         };
 
-        ContentPeople.updateItemData = function (item) {
+        ContentPeople.updateItemData = function (item, callback) {
           $scope.savingPerson = true;
           if (!$scope.$$phase) $scope.$digest();
 
@@ -310,8 +308,8 @@
                   () => { }
                 );
               }
-              $scope.savingPerson = false;
               if (!$scope.$$phase) $scope.$digest();
+              callback();
             });
           })
         };
@@ -407,12 +405,20 @@
         var tmrDelayForPeoples = null;
         var lastUpdateRequest = null;
 
-        var updateItemsWithDelay = function (item) {
-          console.log(item.data.email);
+        var updateItemsWithDelay = function (item, callback) {
           clearTimeout(tmrDelayForPeoples);
           if (item.id)
             ContentPeople.isUpdating = false;
           ContentPeople.unchangedData = angular.equals(_data, item.data);
+
+          if (!item.id && isUnchanged(item)) {
+            buildfire.dialog.toast({
+              message: "Please fill at least one field",
+              type: 'danger',
+              duration: 2500,
+              hideDismissButton: true
+            });
+          }
 
           lastUpdateRequest = new Date();
           isValidItem(item, lastUpdateRequest, function (err, result) {
@@ -421,11 +427,11 @@
               tmrDelayForPeoples = setTimeout(function () {
                 console.log("inside   " + item.data.email);
                 if (item.id) {
-                  ContentPeople.updateItemData(item);
+                  ContentPeople.updateItemData(item, callback);
                 } else if (!ContentPeople.isNewItemInserted) {
-                  ContentPeople.addNewItem(item);
+                  ContentPeople.addNewItem(item, callback);
                 }
-              }, 500);
+              }, 0);
             }
             if (err) {
               if (!$scope.error)
@@ -438,12 +444,38 @@
           });
         };
 
+        ContentPeople.save = function () {
+          var item = {};
+          angular.copy(ContentPeople.item, item);
+          item.data.email = $scope.draft_email ? $scope.draft_email.toLowerCase() : '';
+          updateItemsWithDelay(item, () => {
+              ContentPeople.done();
+          });
+        }
+
+        // $scope.$watch(function () {
+        //   var item = {};
+        //   angular.copy(ContentPeople.item, item);
+        //   item.data.email = $scope.draft_email ? $scope.draft_email.toLowerCase() : '';
+        //   return item;
+        // }, ContentPeople.updateItemsWithDelay, true);
+
+        var timerDelay;
+        var updateItemOnWidget = item => {
+          clearTimeout(timerDelay);
+          // if (item.id) {
+            timerDelay = setTimeout(() => {
+              buildfire.messaging.sendMessageToWidget({ type: "updateItem", item: item.data });
+            }, 500);
+          // }
+        }
+
         $scope.$watch(function () {
           var item = {};
           angular.copy(ContentPeople.item, item);
           item.data.email = $scope.draft_email ? $scope.draft_email.toLowerCase() : '';
           return item;
-        }, updateItemsWithDelay, true);
+        }, updateItemOnWidget, true);
 
         $scope.$on("$destroy", function () {
           console.log("^^^^^^^^^^^^^^^^^^");

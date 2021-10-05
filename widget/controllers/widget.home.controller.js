@@ -609,5 +609,13 @@
                     WidgetHome.loadMore();
                     $scope.$digest();
                 });
+
+                $rootScope.reset = () => {
+                    WidgetHome.items = [];
+                    searchOptions.skip = 0;
+                    WidgetHome.busy = false;
+                    WidgetHome.loadMore();
+                    $scope.$digest();
+                }
             }]);
 })(window.angular, window);

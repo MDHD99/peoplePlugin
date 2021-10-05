@@ -148,6 +148,25 @@
                 var itemId = $routeParams.id;
                 var getPeopleDetail = function () {
 
+                    // For adding a new item
+                    if (itemId === 'new') {
+                        WidgetPeople.item = {
+                            "email": "",
+                            "topImage": "",
+                            "fName": "",
+                            "lName": "",
+                            "position": "",
+                            "phone": "",
+                            "deepLinkUrl": "",
+                            "dateCreated": "",
+                            "socialLinks": [],
+                            "bodyContent": "",
+                            "rank": 99999,
+                            "searchEngineDocumentId": ""
+                        }
+                        return bindOnUpdate();
+                    }
+
                     Buildfire[window.DB_PROVIDER].getById(itemId, TAG_NAMES.PEOPLE, function (err, result) {
                         if (err && err.code !== ERROR_CODE.NOT_FOUND) {
                             console.error('-----------Unable to load data-------------', err);
@@ -297,5 +316,29 @@
                     getPeopleDetail();
                 });
 
+                buildfire.messaging.onReceivedMessage = function (msg) {
+                   switch (msg.type) {
+                    //  case 'AddNewItem':
+                    //    Location.goTo("#/people/" + msg.id + "?stopSwitch=true");
+                    //    break;
+                     case 'OpenItem':
+                       Location.goTo("#/people/" + msg.id);
+                       break;
+                     case 'updateItem':
+                        WidgetPeople.item = msg.item;
+                        if (!$scope.$$phase) $scope.$apply();
+                       break;
+                     case 'goHome':
+                        Location.goToHome();
+                       break;
+                     case 'reload':
+                        $rootScope.reset();
+                       break;
+                     default:
+                       if ($rootScope.showHome == false) {
+                           Location.goToHome();
+                       }
+                   }
+                 };
             }])
 })(window.angular, window);
